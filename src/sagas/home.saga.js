@@ -19,7 +19,7 @@ const loadUsers = asyncFlow({
       url: `/usuarios`,
       method: "get",
       isMock: true,
-      mockResult: usersMock,
+      mockResult: usersMock.sort((a, b) => a.dataNascimento - b.dataNascimento),
     });
   },
   postSuccess: function* ({ response }) {
