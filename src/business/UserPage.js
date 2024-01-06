@@ -22,6 +22,7 @@ const UserPage = () => {
     rules,
     initialValues,
   };
+  
   const handleSubmit = (values) => {
     dispatch(actions.saveUser.request(values));
   };
@@ -36,12 +37,8 @@ const UserPage = () => {
 
       <form onSubmit={formProps.handleSubmit(handleSubmit)}>
         <ControlledTextField label="Nome" name={"nome"} formProps={formProps} />
-        <ControlledTextField label="CEP" name={"cep"} formProps={formProps} />
-        <ControlledTextField
-          label="Cidade"
-          name={"cidade"}
-          formProps={formProps}
-        />
+        <ControlledTextField label="CEP" name={"cep"} formProps={formProps} format="#####-###" mask="_"/>
+        <ControlledTextField label="Cidade" name={"cidade"} formProps={formProps}/>
         <ControlledTextField label="UF" name={"uf"} formProps={formProps} />
         <Button type={"submit"}>GRAVAR</Button>
       </form>
