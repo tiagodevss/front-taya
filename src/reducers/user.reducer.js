@@ -25,9 +25,27 @@ const reducer = (state = initialState, action) => {
             ? action.payload.response.data
             : null,
       };
+
+    case actions.loadCepData.REQUEST:
+    case actions.loadCepData.SUCCESS:
+      return {
+        ...state,
+        loading: action.type === actions.loadCepData.REQUEST,
+        data:
+          action.type === actions.loadCepData.SUCCESS
+            ? {
+              ...state.data,
+              cep: action.payload.response.data.cep,
+              cidade: action.payload.response.data.localidade,
+              uf: action.payload.response.data.uf,
+            }
+            : null,
+      };
+    case actions.loadCepData.FAILURE:
+      return {...state, loading: false};
     default:
       return state;
   }
 };
-
+console.log(reducer);
 export default reducer;

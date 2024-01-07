@@ -9,6 +9,7 @@ const UserPage = () => {
   const dispatch = useDispatch();
   const { loading, data, id } = useSelector((state) => state.user);
   const rules = {};
+
   const initialValues = {
     nome: "",
     dataNascimento: "",
@@ -22,10 +23,18 @@ const UserPage = () => {
     rules,
     initialValues,
   };
-  
+
+  console.log(formProps);
+
   const handleSubmit = (values) => {
     dispatch(actions.saveUser.request(values));
   };
+
+  const loadCepData = (values) => {
+    if (values != null && values.length === 8) {
+      dispatch(actions.loadCepData.request(values));
+    }
+  }
 
   if (loading) {
     return <div>Carregando usuário</div>;
@@ -37,8 +46,8 @@ const UserPage = () => {
 
       <form onSubmit={formProps.handleSubmit(handleSubmit)}>
         <ControlledTextField label="Nome" name={"nome"} formProps={formProps} />
-        <ControlledTextField label="CEP" name={"cep"} formProps={formProps} format="#####-###" mask="_"/>
-        <ControlledTextField label="Cidade" name={"cidade"} formProps={formProps}/>
+        <ControlledTextField label="CEP" name={"cep"} formProps={formProps} format="#####-###" mask="_" onBlur={(data) => loadCepData(data)} />
+        <ControlledTextField label="Cidade" name={"cidade"} formProps={formProps} />
         <ControlledTextField label="UF" name={"uf"} formProps={formProps} />
         <Button type={"submit"}>GRAVAR</Button>
       </form>

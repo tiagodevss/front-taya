@@ -29,7 +29,7 @@ const loadUser = asyncFlow({
       mockResult: usersMock.find((u) => u.id === values.id) ?? null,
     });
   },
-  postSuccess: function* ({ response }) {
+  postSuccess: function ({ response }) {
     console.log({ user: response.data });
   },
 });
@@ -54,8 +54,20 @@ const saveUser = asyncFlow({
   },
 });
 
+const loadCepData = asyncFlow({
+  actionGenerator: actions.loadCepData,
+  api: (cep) => {
+    return request({
+      url: `https://viacep.com.br/ws/${cep}/json`,
+      method: "get",
+      isMock: false,
+    });
+  }
+});
+
 export const sagas = [
   userRouteWatcher(),
   loadUser.watcher(),
   saveUser.watcher(),
+  loadCepData.watcher()
 ];

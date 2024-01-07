@@ -10,11 +10,10 @@ const ControlledTextField = ({
   format,
   mask,
   validationKey,
-  onBlur = null,
   ignoreError = false,
   ...otherProps
 }) => {
-  const { control, formState: { errors }, rules } = formProps;
+  const { control, formState: { errors }, rules, initialValues } = formProps;
 
   const isError =
     (getValueFromObject(errors, name) !== undefined && !ignoreError) ||
@@ -56,6 +55,7 @@ const ControlledTextField = ({
           {...otherProps}
           value={value}
           error={isError}
+          defaultValue={initialValues[name]}
           InputProps={{
             inputComponent: format ? MaskedInput : null
           }}
@@ -73,8 +73,8 @@ const ControlledTextField = ({
               otherProps.onChange(v);
             }
           }}
-          onBlur={() => {
-            onBlur();
+          onBlur={(data) => {
+            onBlur(data);
             if (!!otherProps.onBlur) {
               otherProps.onBlur(value);
             }
