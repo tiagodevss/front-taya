@@ -3,6 +3,7 @@ import {
   actions as routeActions,
   types as routes,
 } from "../reducers/routes.actions";
+import { actions } from "../reducers/home.actions";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 
 const HomePage = () => {
@@ -11,6 +12,10 @@ const HomePage = () => {
 
   if (loading) {
     return <div>Carregando usuários</div>;
+  }
+
+  const deleteUser = (id) => {
+    dispatch(actions.deleteUser.request(id));
   }
 
   return (
@@ -43,7 +48,9 @@ const HomePage = () => {
                       )
                     }
                   />
-                  <DeleteOutline />
+                  <DeleteOutline
+                    onClick={() => deleteUser(u.id)}
+                  />
                 </td>
               </tr>
             );

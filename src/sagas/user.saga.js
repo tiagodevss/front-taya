@@ -46,11 +46,12 @@ const saveUser = asyncFlow({
       method: "put",
       body: values,
       isMock: true,
-      mockResult: {},
+      mockResult: usersMock.map(user => user.id == id ? {user, ...values} : user),
     });
   },
-  postSuccess: function* () {
-    yield put(routeActions.redirectTo(routes.HOME));
+  postSuccess: function* (data) {
+    console.log(data)
+    yield put(routeActions.redirectTo(routes.HOME, data.values));
   },
 });
 

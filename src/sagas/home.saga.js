@@ -1,4 +1,4 @@
-import { put } from "redux-saga/effects";
+import { put, select } from "redux-saga/effects";
 import { routeWatcher } from "./routes.saga";
 import asyncFlow from "./asyncHandler";
 import { types as routes } from "../reducers/routes.actions";
@@ -27,4 +27,19 @@ const loadUsers = asyncFlow({
   },
 });
 
-export const sagas = [homeRouteWatcher(), loadUsers.watcher()];
+const removeUser = asyncFlow({
+  actionGenerator: actions.deleteUser,
+  api: (id) => {
+    return request({
+      url: `/usuarios/${id}`,
+      method: "delete",
+      isMock: true,
+      mockResult: usersMock.filter(user => user.id !== id),
+    });
+  },
+  postSuccess: function* (response) {
+    console.log(response.response.data)
+  },
+});
+
+export const sagas = [homeRouteWatcher(), loadUsers.watcher(), removeUser.watcher()];

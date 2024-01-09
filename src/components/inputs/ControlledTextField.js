@@ -2,85 +2,55 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import { getValueFromObject } from "../../utils/basic";
-import { PatternFormat } from "react-number-format";
+import ZipCodeTextField from "./ZipCodeTextField";
 
 const ControlledTextField = ({
   formProps,
   name,
-  format,
-  mask,
+  value,
   validationKey,
   ignoreError = false,
   ...otherProps
 }) => {
-  const { control, formState: { errors }, rules, initialValues } = formProps;
-
+  const { control, formState: { errors }, rules } = formProps;
   const isError =
     (getValueFromObject(errors, name) !== undefined && !ignoreError) ||
     otherProps.error;
-
-  const MaskedInput = React.forwardRef(function NumericFormatCustom(props, ref) {
-    const { onChange, ...other } = props;
-
-    return (
-      <PatternFormat
-        {...other}
-        getInputRef={ref}
-        onValueChange={(values) => {
-          onChange({
-            target: {
-              name: props.name,
-              value: values.value,
-            },
-          });
-        }}
-        format={format}
-        mask={mask}
-      />
-    );
-  });
 
   return (
     <Controller
       name={name}
       control={control}
       disabled={otherProps.disabled}
+      defaultValue={value}
       rules={
         otherProps.disabled
           ? { a: () => true }
           : getValueFromObject(rules, validationKey ?? name)
       }
-      render={({ field: { onChange, onBlur, value } }) => (
-        <TextField
+      render={({ field: { onChange, onBlur, value, ref } }) => {
+        return <TextField
           {...otherProps}
+          inputRef={ref}
           value={value}
           error={isError}
-          defaultValue={initialValues[name]}
-          InputProps={{
-            inputComponent: format ? MaskedInput : null
-          }}
-          helperText={
-            !isError
-              ? otherProps.helperText
-              : !ignoreError
-                ? getValueFromObject(errors, name)?.message ??
-                otherProps.helperText
-                : undefined
-          }
-          onChange={(v) => {
-            onChange(v);
+          InputProps={name === "cep" ? {
+            inputComponent: ZipCodeTextField,
+          } : undefined}
+          onChange={(value) => {
+            onChange(value);
             if (!!otherProps.onChange) {
-              otherProps.onChange(v);
+              otherProps.onChange(value);
             }
           }}
-          onBlur={(data) => {
-            onBlur(data);
+          onBlur={() => {
+            onBlur();
             if (!!otherProps.onBlur) {
               otherProps.onBlur(value);
             }
           }}
         />
-      )}
+      }}
     />
   );
 };

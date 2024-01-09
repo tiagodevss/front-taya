@@ -18,21 +18,19 @@ const UserPage = () => {
     uf: "",
     ...data,
   };
-  const formProps = {
-    ...useForm(),
-    rules,
-    initialValues,
-  };
 
-  console.log(formProps);
+  const formProps = {
+    ...useForm({ values: initialValues }),
+    rules,
+  };
 
   const handleSubmit = (values) => {
     dispatch(actions.saveUser.request(values));
   };
 
-  const loadCepData = (values) => {
-    if (values != null && values.length === 8) {
-      dispatch(actions.loadCepData.request(values));
+  const loadCepData = (value) => {
+    if (value != null && value.length === 9) {
+      dispatch(actions.loadCepData.request(value));
     }
   }
 
@@ -45,11 +43,14 @@ const UserPage = () => {
       <h2>Usuário #{id}</h2>
 
       <form onSubmit={formProps.handleSubmit(handleSubmit)}>
-        <ControlledTextField label="Nome" name={"nome"} formProps={formProps} />
-        <ControlledTextField label="CEP" name={"cep"} formProps={formProps} format="#####-###" mask="_" onBlur={(data) => loadCepData(data)} />
-        <ControlledTextField label="Cidade" name={"cidade"} formProps={formProps} />
-        <ControlledTextField label="UF" name={"uf"} formProps={formProps} />
-        <Button type={"submit"}>GRAVAR</Button>
+        <ControlledTextField label="Nome" name={"nome"} value={data.nome} formProps={formProps} />
+        <ControlledTextField label="CEP" name={"cep"} value={data.cep} formProps={formProps} format="#####-###" mask="_" onBlur={loadCepData} />
+        <ControlledTextField label="Cidade" name={"cidade"} value={data.cidade} formProps={formProps} />
+        <ControlledTextField label="UF" name={"uf"} value={data.uf} formProps={formProps} />
+
+        <Button type={"submit"} disabled={formProps.formState.isSubmitting}>
+          {formProps.formState.isSubmitting ? "Salvando" : "Salvar"}
+        </Button>
       </form>
     </>
   );
