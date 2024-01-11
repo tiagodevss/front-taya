@@ -1,6 +1,5 @@
 import { actions } from "./user.actions";
 import { types as routes } from "./routes.actions";
-import moment from "moment";
 
 const initialState = {
   id: null,

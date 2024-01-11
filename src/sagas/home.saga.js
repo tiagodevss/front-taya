@@ -1,4 +1,4 @@
-import { put, select } from "redux-saga/effects";
+import { put } from "redux-saga/effects";
 import { routeWatcher } from "./routes.saga";
 import asyncFlow from "./asyncHandler";
 import { types as routes } from "../reducers/routes.actions";

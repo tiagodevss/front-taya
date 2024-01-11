@@ -2,7 +2,6 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import { getValueFromObject } from "../../utils/basic";
-import ZipCodeTextField from "./ZipCodeTextField";
 
 const ControlledTextField = ({
   formProps,
@@ -14,7 +13,7 @@ const ControlledTextField = ({
   component,
   ...otherProps
 }) => {
-  const { control, formState: { errors }, rules } = formProps;
+  const { control, formState: { errors } } = formProps;
   const isError =
     (getValueFromObject(errors, name) !== undefined && !ignoreError) ||
     otherProps.error;

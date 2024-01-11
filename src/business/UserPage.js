@@ -9,9 +9,7 @@ import {
   types as routes,
 } from "../reducers/routes.actions";
 import validators from "../utils/validators";
-import { useEffect } from "react";
 import DateTextField from "../components/inputs/DateTextField";
-import moment from "moment";
 
 const UserPage = () => {
   const dispatch = useDispatch();

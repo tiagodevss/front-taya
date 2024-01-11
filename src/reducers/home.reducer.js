@@ -1,4 +1,3 @@
-import moment from "moment";
 import { getAge, orderUsersByBirthDateDesc } from "../utils/functions";
 import { actions } from "./home.actions";
 import { types as routes } from "./routes.actions";
