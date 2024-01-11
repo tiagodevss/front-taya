@@ -18,7 +18,7 @@ const loadUsers = asyncFlow({
     return request({
       url: `/usuarios`,
       method: "get",
-      isMock: true,
+      isMock: false,
       mockResult: usersMock.sort((a, b) => a.dataNascimento - b.dataNascimento),
     });
   },
@@ -31,15 +31,12 @@ const removeUser = asyncFlow({
   actionGenerator: actions.deleteUser,
   api: (id) => {
     return request({
-      url: `/usuarios/${id}`,
+      url: `/usuario/${id}`,
       method: "delete",
-      isMock: true,
+      isMock: false,
       mockResult: usersMock.filter(user => user.id !== id),
     });
-  },
-  postSuccess: function* (response) {
-    console.log(response.response.data)
-  },
+  }
 });
 
 export const sagas = [homeRouteWatcher(), loadUsers.watcher(), removeUser.watcher()];

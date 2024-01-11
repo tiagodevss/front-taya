@@ -53,9 +53,9 @@ const validators = {
         minLength: (value) =>
           !minLength ||
           value.length >= minLength ||
-          `Tamanho mínimo (${minLength})`,
+          `Tamanho mínimo é de ${minLength} caracteres`,
         length: (value) =>
-          !length || value.length === length || `Tamanho inválido (${length})`,
+          !length || value.length === length || `Tamanho inválido`,
         ...custom,
       },
     };

@@ -2,8 +2,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useForm } from "react-hook-form";
 import { actions } from "../reducers/user.actions";
-import { ControlledTextField } from "../components/inputs";
-import { Button } from "@mui/material";
+import { ControlledTextField, ZipCodeTextField } from "../components/inputs";
+import { Button, Paper } from "@mui/material";
+import {
+  actions as routeActions,
+  types as routes,
+} from "../reducers/routes.actions";
+import validators from "../utils/validators";
+import { useEffect } from "react";
+import DateTextField from "../components/inputs/DateTextField";
+import moment from "moment";
 
 const UserPage = () => {
   const dispatch = useDispatch();
@@ -20,16 +28,16 @@ const UserPage = () => {
   };
 
   const formProps = {
-    ...useForm({ values: initialValues }),
+    ...useForm({ values: initialValues, mode: "onBlur" }),
     rules,
   };
 
   const handleSubmit = (values) => {
-    dispatch(actions.saveUser.request(values));
+    dispatch(actions.saveUser.request({...values, dataNascimento: values.dataNascimento.split("/").reverse().join("-")}))
   };
 
   const loadCepData = (value) => {
-    if (value != null && value.length === 9) {
+    if (value.cep != null && value.cep.length === 9) {
       dispatch(actions.loadCepData.request(value));
     }
   }
@@ -40,18 +48,60 @@ const UserPage = () => {
 
   return (
     <>
-      <h2>Usuário #{id}</h2>
+      <h2>{id ? "Atualizar Usuário" : "Cadastrar Usuário"}</h2>
 
-      <form onSubmit={formProps.handleSubmit(handleSubmit)}>
-        <ControlledTextField label="Nome" name={"nome"} value={data.nome} formProps={formProps} />
-        <ControlledTextField label="CEP" name={"cep"} value={data.cep} formProps={formProps} format="#####-###" mask="_" onBlur={loadCepData} />
-        <ControlledTextField label="Cidade" name={"cidade"} value={data.cidade} formProps={formProps} />
-        <ControlledTextField label="UF" name={"uf"} value={data.uf} formProps={formProps} />
+      <Paper elevation={0}>
+        <form onSubmit={formProps.handleSubmit(handleSubmit)}>
+          <div style={{ display: "flex", backgroundColor: "#fff", flexDirection: "row", flexWrap: "wrap", rowGap: 20 }}>
+            <ControlledTextField
+              label="Nome"
+              validationKey={validators.string({ required: true })}
+              name={"nome"}
+              value={data?.nome}
+              formProps={formProps}
+            />
+            <ControlledTextField
+              label="Data de Nascimento"
+              validationKey={validators.date({ required: true })}
+              name={"dataNascimento"}
+              value={data?.dataNascimento}
+              formProps={formProps}
+              format={DateTextField}
+            />
+            <ControlledTextField
+              label="CEP"
+              validationKey={validators.string({ required: true, length: 9 })}
+              name={"cep"}
+              value={data?.cep}
+              formProps={formProps}
+              format={ZipCodeTextField} onBlur={loadCepData}
+            />
+            <ControlledTextField
+              label="Cidade"
+              validationKey={validators.string({ required: true })}
+              name={"cidade"}
+              value={data?.cidade}
+              formProps={formProps}
+            />
+            <ControlledTextField
+              label="UF"
+              validationKey={validators.string({ required: true, length: 2 })}
+              name={"uf"}
+              value={data?.uf}
+              formProps={formProps}
+            />
+          </div>
 
-        <Button type={"submit"} disabled={formProps.formState.isSubmitting}>
-          {formProps.formState.isSubmitting ? "Salvando" : "Salvar"}
-        </Button>
-      </form>
+          <div style={{ display: "flex", flexDirection: "row", columnGap: 10, backgroundColor: "#fff", alignItems: "center", justifyContent: "flex-end" }}>
+            <Button variant={"contained"} color={"error"} type={"button"} onClick={() => dispatch(routeActions.redirectTo(routes.HOME))}>
+              {"Voltar"}
+            </Button>
+            <Button variant={"contained"} color={"success"} type={"submit"} disabled={formProps.formState.isSubmitting}>
+              {formProps.formState.isSubmitting ? "Salvando" : "Salvar"}
+            </Button>
+          </div>
+        </form>
+      </Paper>
     </>
   );
 };

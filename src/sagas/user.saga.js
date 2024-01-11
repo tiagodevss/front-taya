@@ -8,10 +8,14 @@ import {
 import { actions } from "../reducers/user.actions";
 import { request } from "../utils/api";
 import usersMock from "./users.mock";
+import moment from "moment";
 
 function* userRouteWatcher() {
   yield routeWatcher(routes.USER, function* () {
-    yield put(actions.loadUser.request());
+    const id = yield select((state) => state.user.id);
+    if (id) {
+      yield put(actions.loadUser.request());
+    }
   });
 }
 
@@ -25,7 +29,7 @@ const loadUser = asyncFlow({
     return request({
       url: `/usuario/${values.id}`,
       method: "get",
-      isMock: true,
+      isMock: false,
       mockResult: usersMock.find((u) => u.id === values.id) ?? null,
     });
   },
@@ -40,13 +44,15 @@ const saveUser = asyncFlow({
     const id = yield select((state) => state.user.id);
     return { id, ...payload };
   },
-  api: ({ id, ...values }) => {
+  api: (values) => {
     return request({
-      url: `/usuario/${id}`,
-      method: "put",
-      body: values,
-      isMock: true,
-      mockResult: usersMock.map(user => user.id == id ? {user, ...values} : user),
+      url: `/usuario`,
+      method: "post",
+      body: { ...values, dataNascimento: moment(values.dataNascimento).format("YYYY-MM-DD") },
+      isMock: false,
+      mockResult: values.id
+        ? usersMock.map(user => user.id == values.id ? { user, ...values } : user)
+        : usersMock.push({ ...values, id: usersMock.sort()[usersMock.length - 1].id + 1 }),
     });
   },
   postSuccess: function* (data) {
@@ -57,7 +63,7 @@ const saveUser = asyncFlow({
 
 const loadCepData = asyncFlow({
   actionGenerator: actions.loadCepData,
-  api: (cep) => {
+  api: ({ cep }) => {
     return request({
       url: `https://viacep.com.br/ws/${cep}/json`,
       method: "get",

@@ -1,5 +1,6 @@
 import { actions } from "./user.actions";
 import { types as routes } from "./routes.actions";
+import moment from "moment";
 
 const initialState = {
   id: null,
@@ -22,7 +23,10 @@ const reducer = (state = initialState, action) => {
         loading: action.type === actions.loadUser.REQUEST,
         data:
           action.type === actions.loadUser.SUCCESS
-            ? action.payload.response.data
+            ? {
+              ...action.payload.response.data,
+              dataNascimento: action.payload.response.data.dataNascimento.split("-").reverse().join("/")
+            }
             : null,
       };
 
@@ -37,13 +41,16 @@ const reducer = (state = initialState, action) => {
             action.payload.response.data.cep
             ? {
               ...state.data,
+              nome: action.payload.values?.nome,
+              dataNascimento: action.payload.values?.dataNascimento.split("-").reverse().join("/"),
               cep: action.payload.response.data.cep,
               cidade: action.payload.response.data.localidade,
               uf: action.payload.response.data.uf,
-            }
-            : {
+            } : {
               ...state.data,
-              cep: action.payload.values,
+              nome: action.payload.values?.nome,
+              dataNascimento: action.payload.values?.dataNascimento.split("-").reverse().join("/"),
+              cep: action.payload.values?.cep,
               cidade: "",
               uf: ""
             },

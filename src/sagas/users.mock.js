@@ -1,6 +1,4 @@
-const getAge = (birthDate) => {
-  return Math.floor((new Date() - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
-}
+import { getAge } from "../utils/functions";
 
 const data = [
   {

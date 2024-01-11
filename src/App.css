@@ -1,0 +1,28 @@
+html {
+    overflow-y: scroll;
+}
+
+html{
+    background-color: #F3F3F3;
+}
+
+#content {
+    width: 100%;
+    background-color: #F3F3F3;
+    padding: 30px 90px 30px 90px;
+    display: flex;
+    flex-direction: column;
+}
+
+.controlled-text-field{
+    width: 300px;
+}
+
+@media (max-width: 768px) {
+    .controlled-text-field{
+        width: 100%;
+    }
+    #content {
+        padding: 30px 20px 30px 20px;
+    }
+  }

@@ -10,6 +10,8 @@ const ControlledTextField = ({
   value,
   validationKey,
   ignoreError = false,
+  format,
+  component,
   ...otherProps
 }) => {
   const { control, formState: { errors }, rules } = formProps;
@@ -23,33 +25,34 @@ const ControlledTextField = ({
       control={control}
       disabled={otherProps.disabled}
       defaultValue={value}
-      rules={
-        otherProps.disabled
-          ? { a: () => true }
-          : getValueFromObject(rules, validationKey ?? name)
-      }
+      rules={validationKey}
       render={({ field: { onChange, onBlur, value, ref } }) => {
-        return <TextField
-          {...otherProps}
-          inputRef={ref}
-          value={value}
-          error={isError}
-          InputProps={name === "cep" ? {
-            inputComponent: ZipCodeTextField,
-          } : undefined}
-          onChange={(value) => {
-            onChange(value);
-            if (!!otherProps.onChange) {
-              otherProps.onChange(value);
-            }
-          }}
-          onBlur={() => {
-            onBlur();
-            if (!!otherProps.onBlur) {
-              otherProps.onBlur(value);
-            }
-          }}
-        />
+        return <>
+          <TextField
+            {...otherProps}
+            inputRef={ref}
+            value={value}
+            error={isError}
+            helperText={isError ? errors[name]?.message : " "}
+            className="controlled-text-field"
+            style={{ margin: 5 }}
+            InputProps={format ? {
+              inputComponent: format,
+            } : undefined}
+            onChange={(value) => {
+              onChange(value);
+              if (!!otherProps.onChange) {
+                otherProps.onChange(value);
+              }
+            }}
+            onBlur={() => {
+              onBlur();
+              if (!!otherProps.onBlur) {
+                otherProps.onBlur(formProps.getValues());
+              }
+            }}
+          />
+        </>
       }}
     />
   );
